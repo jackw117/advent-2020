@@ -3,8 +3,34 @@
 #include <iostream>
 #include <unordered_map>
 #include <algorithm>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
+
+
+vector<unordered_map<string, string>> getVectorVector(string file) {
+    vector<unordered_map<string, string>> v;
+    fstream newfile;
+    newfile.open(file, ios::in);
+    if (newfile.is_open()) {
+        string tp;
+        unordered_map<string, string> current;
+        while (getline(newfile, tp)) {
+            if (tp.length() == 0) {
+                v.push_back(current);
+                current = {};
+            } else {
+                stringstream ss(tp);
+                while (ss >> tp) {
+                    current[tp.substr(0, 3)] = tp.substr(4);
+                }
+            }
+        }
+        v.push_back(current);
+    }
+    return v;
+}
 
 int validPassports(vector<unordered_map<string, string>> v) {
     int total = 0;
